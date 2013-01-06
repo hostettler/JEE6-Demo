@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/xhtml/templates/layout.xhtml">
+
+
+	<ui:define name="title"> 
+      #{msgs.titleList}
+   </ui:define>
+
+	<ui:define name="content">
+
+		<h:form>
+			<p:dataTable var="student" id="studentTable"
+				value="#{manageStudentRegistration.service.all}" paginator="true"
+				rows="10" rowKey="#{student.key}"
+				selection="#{manageStudentRegistration.selectedStudent}"
+				selectionMode="single"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} 
+         {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15">
+
+                 <p:ajax event="rowSelect"   update="studentTable" />  
+                 <p:ajax event="rowUnselect" update="studentTable"/>  
+  
+
+				<p:column sortBy="#{student.lastName}">
+					<f:facet name="header">
+						<h:outputText  value="#{msgs.lastName}" />
+					</f:facet>
+					<h:outputText value="#{student.lastName}" />
+				</p:column>
+
+				<p:column sortBy="#{student.firstName}">
+					<f:facet name="header">
+						<h:outputText value="#{msgs.firstName}" />
+					</f:facet>
+					<h:outputText value="#{student.firstName}" />
+				</p:column>
+
+				<p:column sortBy="#{student.phoneNumber}">
+					<f:facet name="header">
+						<h:outputText value="#{msgs.phoneNumber}" />
+					</f:facet>
+					<h:outputText  value="#{student.phoneNumber}">
+						<f:converter converterId="PhoneNumberConverter" />
+					</h:outputText>
+				</p:column>
+
+				<p:column sortBy="#{student.birthDate}">
+					<f:facet name="header">
+						<h:outputText value="#{msgs.birthDate}" />
+					</f:facet>
+					<h:outputText value="#{student.birthDate}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+
+                <p:column sortBy="#{student.gender}">
+                    <f:facet name="header">
+                        <h:outputText value="#{msgs.gender}" />
+                    </f:facet>
+                    <h:outputText
+                        value="#{student.gender}">
+                    </h:outputText>
+                </p:column>
+         
+				<p:column sortBy="#{student.grade}">
+					<f:facet name="header">
+						<h:outputText value="#{msgs.avgGrade}" />
+					</f:facet>
+					<h:outputText
+						style="color:#{student.avgGrade le 50 ? 'red' : 'green'}"
+						value="#{student.avgGrade}">
+						<f:convertNumber pattern="#0.0000" />
+					</h:outputText>
+				</p:column>
+
+				<f:facet name="footer">
+				
+					<p:commandButton value="#{msgs.details}"
+						icon="ui-icon ui-icon-search"
+						disabled="#{manageStudentRegistration.service.nbStudent==0 || manageStudentRegistration.selectedStudent == null}"
+						update="display" oncomplete="studentDialog.show()" />
+
+					<ui:include src="templates/dialog.xhtml"></ui:include>
+				</f:facet>
+			</p:dataTable>
+
+
+		</h:form>
+
+		<h:form>
+			<h:panelGrid id="buttonGrid" columns="1"
+				style="margin-top:10px;width: 100%;"
+				columnClasses="alignleft,alignright">
+				
+				<p:commandButton id="register" name="register" 
+				    disabled="#{!sessionBean.admin}"
+				    value="#{msgs.save}"  icon="ui-icon ui-icon-pencil" 
+					action="#{manageStudentRegistration.toRegistration}" ajax="false" />					
+					
+			</h:panelGrid>
+		</h:form>
+
+
+		<h1>
+			<h:outputFormat value="#{msgs.summary}">
+				<f:param value="#{manageStudentRegistration.service.nbStudent}" />
+			</h:outputFormat>
+		</h1>
+
+		<p:pieChart value="#{manageStudentRegistration.pieModel}"
+			legendPosition="w" title="#{msgs.gradeDistribution}"
+			style="margin-top:50px;margin-left:auto;margin-right:auto;width:400px;height:300px" />
+
+	</ui:define>
+</ui:composition>

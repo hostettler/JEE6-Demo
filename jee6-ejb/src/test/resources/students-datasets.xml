@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+	<students id="1" first_name='Richard' last_name='Wright' birth_date='1975-01-23'
+		phone_number='00-0000-0000' city='New York' >
+		<grades discipline="1" grade="10" student_id="1"/>
+		<badges security_level="1"  student_id="1"/>
+		<pictures picture="test"  student_id="1"/>
+	</students>
+	<students id="2"  first_name='Roger' last_name='Waters' birth_date='1983-09-11'
+		phone_number='00-0000-0000'>
+		<grades discipline="1" grade="10"  student_id="2"/>
+		<badges security_level="1"  student_id="2"/>
+		<pictures picture="test"  student_id="2"/>
+	</students>
+	<students id="3"  first_name='Nick' last_name='Mason' birth_date='1965-04-25'
+		phone_number='00-0000-0000'>
+		<grades discipline="1" grade="10"  student_id="3"/>
+		<badges security_level="3"  student_id="3"/>
+		<pictures picture="test"  student_id="3"/>
+	</students>
+	<students id="4"  first_name='David' last_name='Gilmour' birth_date='1993-06-13'
+		phone_number='00-0000-0000'>
+		<grades discipline="1" grade="10"  student_id="4"/>
+		<badges security_level="1"  student_id="4"/>
+		<pictures picture="test" student_id="4" />
+	</students>
+	<students id="5"  first_name='Syd' last_name='Barrett' birth_date='1978-07-30'
+		phone_number='00-0000-0000'>
+		<grades discipline="0" grade="10"  student_id="5" />
+		<badges security_level="1"  student_id="5"/>
+		<pictures picture="test" student_id="5"/>
+	</students>
+</dataset>

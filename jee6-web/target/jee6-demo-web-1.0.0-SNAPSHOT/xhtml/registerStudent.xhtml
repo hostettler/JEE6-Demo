@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition
+   xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:f="http://java.sun.com/jsf/core"
+   xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:c="http://java.sun.com/jsp/jstl/core"
+   xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:p="http://primefaces.org/ui"
+   template="/xhtml/templates/layout.xhtml">
+
+   <ui:define name="title"> 
+      #{msgs.titleForm}
+   </ui:define>
+
+   <ui:define name="content"> 
+   
+   <h:form styleClass="central">
+      <h:panelGrid columns="1" styleClass="container-horizontally-center"
+         cellpadding="10">
+
+         <h:panelGroup>
+            <p:fieldset legend="#{msgs.fieldset}" toggleable="false">
+               <h:panelGrid columns="3" cellpadding="10">
+
+
+                  <h:outputLabel for="firstName" value="#{msgs.firstName}" />
+                  <p:inputText id="firstName"
+                     value="#{manageStudentRegistration.student.firstName}"
+                     required="true">
+                     <f:validateLength minimum="5" />
+                     <f:validateLength maximum="30"/>
+                     <f:validateRequired />
+                     <p:ajax event="blur" update="msgFirstName" />
+                  </p:inputText>
+                  <p:message id="msgFirstName" for="firstName" />
+
+                  <h:outputLabel for="lastName" value="#{msgs.lastName}" />
+                  <p:inputText id="lastName"
+                     value="#{manageStudentRegistration.student.lastName}"
+                     required="true" />
+                  <p:message id="msgLastName" for="lastName" />
+
+                  <h:outputLabel for="birthDate" value="#{msgs.birthDate}" />
+                  <p:calendar id="birthDate" pattern="dd/MM/yyyy"
+                     value="#{manageStudentRegistration.student.birthDate}"
+                     required="true" />
+                  <p:message id="msgBirthDate" for="birthDate" />
+
+                  <h:outputLabel for="phoneNumberInput" value="#{msgs.phoneNumber}" />
+                  <p:inputText id="phoneNumberInput"
+                     value="#{manageStudentRegistration.student.phoneNumber}"
+                     required="true" >
+                     <f:validator validatorId="PhoneNumberValidator" />
+                     <f:converter converterId="PhoneNumberConverter" />
+                  </p:inputText>   
+                  <p:message id="msgPhoneNumber" for="phoneNumberInput" />
+
+
+                  <h:outputLabel for="genderInput" value="#{msgs.gender}" />
+                  <p:selectOneMenu id="genderInput" 
+                     value="#{manageStudentRegistration.student.gender}"
+                     effect="fold" >  
+                        <f:selectItems value="#{manageStudentRegistration.genderValues}"/>  
+                 </p:selectOneMenu>  
+                  <p:message id="msgGender" for="genderInput" />
+
+ 
+               </h:panelGrid>
+            </p:fieldset>
+         </h:panelGroup>
+
+         <h:panelGroup>
+            <p:fieldset legend="#{msgs.gradePerDiscipline}" toggleable="false">
+               <p:dataTable var="grade" value="#{manageStudentRegistration.student.grades}">
+                  
+                  <p:column sortBy="grade.discipline">
+                     <f:facet name="header">
+                        <h:outputText value="#{msgs.discipline}" />
+                     </f:facet>
+                     <h:outputText value="#{grade.discipline}" />
+                  </p:column>
+
+                  <p:column sortBy="grade.grade">
+                     <f:facet name="header">
+                        <h:outputText value="#{msgs.grade}" />
+                     </f:facet>
+                     <h:inputText id="grade" value="#{grade.grade}">
+                        <f:validateLongRange minimum="0" maximum="100" />
+                        <f:convertNumber minFractionDigits="2" />
+                        <p:ajax event="blur" update="msgForGrade" />
+                     </h:inputText>
+                     <p:message id="msgForGrade" for="grade" />
+                  </p:column>
+
+               </p:dataTable>
+            </p:fieldset>
+         </h:panelGroup>
+
+         <h:panelGroup>
+            <h:panelGrid columns="3" style="width: 100%;"
+               columnClasses="alignleft, aligncenter, alignright">
+               <p:commandButton icon="ui-icon ui-icon-close" immediate="true"
+                  style="width:120px" value="Annuler" action="#{manageStudentRegistration.cancel}" ajax="false" />
+               <p:commandButton icon="ui-icon ui-icon-refresh" immediate="true"
+                  style="width:120px" value="Effacer" action="failure" ajax="false" />
+               <p:commandButton icon="ui-icon ui-icon-disk" style="width:120px"
+                  value="Enregistrer" action="#{manageStudentRegistration.add}"
+                  ajax="false" />
+            </h:panelGrid>
+         </h:panelGroup>
+      </h:panelGrid>
+
+   </h:form>
+   </ui:define>
+</ui:composition>
