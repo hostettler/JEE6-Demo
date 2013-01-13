@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.persistence.annotations.Convert;
@@ -46,7 +47,7 @@ import ch.demo.dom.jpa.JPAPhoneNumberConverter;
  * @author hostettler
  */
 @Entity
-@NamedQuery(name = "findAllStudentsByFirstName", query = "SELECT s FROM Student s WHERE s.firstName = :firstname")
+@NamedQuery(name = "findAllStudentsByFirstName", query = "SELECT s FROM Student s WHERE s.lastName = :lastname")
 @Table(name = "STUDENTS")
 @SecondaryTable(name = "PICTURES", pkJoinColumns = 
 @PrimaryKeyJoinColumn(name = "STUDENT_ID", referencedColumnName = "ID"))
@@ -89,11 +90,12 @@ public class Student implements Serializable {
 
     /** The address of the student. */
     @Embedded
-    private Address mAddress;
+    private Address address;
 
     /** The set of grades of the student. */
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "student")
     @OrderBy("discipline DSC")
+    @XmlTransient
     private List<Grade> grades;
 
     /** Alternative representation of the set of grades of the student. */
@@ -101,16 +103,19 @@ public class Student implements Serializable {
     @CollectionTable(name = "GRADES", joinColumns = @JoinColumn(name = "STUDENT_ID"))
     @MapKeyColumn(name = "Discipline")
     @Column(name = "GRADE")
+    @XmlTransient
     private Map<Discipline, Integer> alternativeGrades;
 
     /** A picture of the student. */
     @Lob
     @Basic(fetch = FetchType.LAZY)
     @Column(table = "PICTURES", name = "PICTURE", nullable = true)
+    @XmlTransient
     private byte[] picture;
 
     /** The Student's badge. */
     @OneToOne(mappedBy = "student")
+    @XmlTransient
     private Badge badge;
 
     /**
@@ -309,15 +314,15 @@ public class Student implements Serializable {
      * @return the address
      */
     public final Address getAddress() {
-        return mAddress;
+        return address;
     }
 
     /**
      * @param address
      *            the address to set
      */
-    public final void setAddress(final Address address) {
-        mAddress = address;
+    public final void setAddress(final Address pAddress) {
+        this.address = pAddress;
     }
 
     /**

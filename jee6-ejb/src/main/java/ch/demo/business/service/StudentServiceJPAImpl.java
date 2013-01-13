@@ -102,6 +102,8 @@ public class StudentServiceJPAImpl implements StudentService, StudentServiceRemo
     	numberOfAccess++;
         Integer[] grades = new Integer[n];
 
+        for (int i = 0; i < n ; i++) { grades[i] = 0; }
+        
         for (Student s : this.getAll()) {
             grades[(s.getAvgGrade().intValue() - 1) / (TOTAL / n)]++;
         }

@@ -38,7 +38,7 @@ public class StudentServlet extends HttpServlet {
 			try {
 				InitialContext ctx = new InitialContext();
 				statistics = (StudentStatisticsService) ctx
-						.lookup("java:global/JEE6-EAR/JEE6-EJB-0.0.1-SNAPSHOT/StudentStatisticsServiceImpl");
+						.lookup("java:global/jee6-demo-ear-1.0.0-SNAPSHOT/jee6-demo-ejb-1.0.0-SNAPSHOT/StudentStatisticsServiceImpl");
 				session.setAttribute(StudentStatisticsService.class.toString(), statistics);
 			} catch (NamingException e) {
 				throw new RuntimeException(e);

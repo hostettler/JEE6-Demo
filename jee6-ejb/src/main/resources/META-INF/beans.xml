@@ -3,8 +3,4 @@
 	xsi:schemaLocation="
           http://java.sun.com/xml/ns/javaee http://www.jboss.org/schema/cdi/beans_1_0.xsd">
 
-	<!-- <interceptors> -->
-	<!-- <class>ch.demo.business.interceptors.PerformanceInterceptor</class> -->
-	<!-- </interceptors> -->
-
 </beans> 

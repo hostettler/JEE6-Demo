@@ -28,7 +28,7 @@ public class Address implements Serializable {
     private String number;
 
     /** the name of the street. */
-    @Column(name = "STREE")
+    @Column(name = "STREET")
     private String street;
 
     /** the city name. */

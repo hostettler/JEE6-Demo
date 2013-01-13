@@ -4,6 +4,7 @@
 package ch.demo.web;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
@@ -17,7 +18,9 @@ import org.slf4j.Logger;
 
 import ch.demo.business.service.StudentService;
 import ch.demo.business.service.StudentStatisticsService;
+import ch.demo.dom.Student;
 import dto.DistributionDto;
+import dto.StudentsDto;
 
 /**
  * @author hostettler
@@ -58,6 +61,15 @@ public class StudentServiceFacade implements Serializable {
 	public Response clean() {
 		studentServiceStatistics.clean();
 		return Response.ok().build();
+	}
+
+	
+	@GET
+	@Produces({ "application/xml", "application/json" })
+	@Path("all")
+	public Response getStudents() {
+		List<Student> students = studentService.getAll();
+		return Response.ok(new StudentsDto(students)).build();
 	}
 	
 	@GET
