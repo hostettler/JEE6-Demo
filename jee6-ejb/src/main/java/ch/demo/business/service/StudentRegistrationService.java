@@ -41,11 +41,10 @@ public class StudentRegistrationService implements MessageListener {
 		try {
 			if (inMessage instanceof TextMessage) {
 				msg = (TextMessage) inMessage;
-				logger.info("MESSAGE BEAN: Message received: " + msg.getText());
+				logger.info("MESSAGE BEAN: Message received: {0}", msg.getText());
 				logger.info(Thread.currentThread().getName());
 			} else {
-				logger.warn("Message of wrong type: "
-						+ inMessage.getClass().getName());
+				logger.warn("Message of wrong type: {0}", inMessage.getClass().getName());
 			}
 		} catch (JMSException e) {
 			mdbContext.setRollbackOnly();
