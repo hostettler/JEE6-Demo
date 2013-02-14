@@ -50,8 +50,9 @@ public class RegistrationServlet extends HttpServlet {
 			TextMessage message = session.createTextMessage();
 
 			for (int i = 0; i < 100; i++) {
-				message.setText("This is message " + (i + 1));
-				logger.info("Sending message: " + message.getText());
+				String msg = new StringBuilder("This is message ").append(i++).toString();
+				message.setText(msg);
+				logger.info("Sending message: {0}", message.getText());
 				messageProducer.send(message);
 			}
 		} catch (JMSException e) {

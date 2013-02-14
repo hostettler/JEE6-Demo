@@ -33,13 +33,13 @@ public class StudentServiceFacade implements Serializable {
 	private static final long serialVersionUID = 1318211294294344900L;
 
 	@EJB
-	StudentService studentService;
+	private StudentService studentService;
 
 	@EJB
-	StudentStatisticsService studentServiceStatistics;
+	private StudentStatisticsService studentServiceStatistics;
 
 	@Inject
-	Logger logger;
+	private Logger logger;
 
 	@GET
 	@Produces({ "application/xml", "application/json" })
