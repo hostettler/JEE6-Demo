@@ -1,18 +1,23 @@
 package ch.demo.business.service;
 
+import java.io.File;
 import java.util.Date;
 import java.util.Properties;
 
-import javax.ejb.EJB;
 import javax.ejb.embeddable.EJBContainer;
-import javax.persistence.NoResultException;
+import javax.inject.Inject;
+import javax.naming.NamingException;
 
-import junit.framework.Assert;
-
+import org.glassfish.api.ActionReport;
+import org.glassfish.api.admin.ParameterMap;
+import org.glassfish.embeddable.CommandRunner;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.impl.base.exporter.zip.ZipExporterImpl;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import ch.demo.dom.Discipline;
@@ -20,23 +25,38 @@ import ch.demo.dom.Grade;
 import ch.demo.dom.PhoneNumber;
 import ch.demo.dom.Student;
 
+import com.sun.appserv.security.ProgrammaticLogin;
+
 /**
  * Test the student service mock implementation.
  * 
  * @author hostettler
  */
-@Ignore
+
 public class JPAStudentServiceImplTest {
 
+	private static final String TEST_RSC = "src/test/resources";
+
 	@BeforeClass
-	public static void start() {
+	public static void start() throws Exception {
+
+		JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "test.jar");
+		archive.addAsManifestResource(new File(TEST_RSC, "META-INF/persistence.xml"));
+		archive.addAsManifestResource(new File(TEST_RSC, "META-INF/beans.xml"));
+		archive.addPackage(java.lang.Package
+				.getPackage("ch.demo.business.service"));
+
 		Properties p = new Properties();
-		p.put("jdbc/StudentsDS__pm", "new://Resource?type=DataSource");
-		p.put("jdbc/StudentsDS__pm.JdbcUrl",
-				"org.apache.derby.jdbc.EmbeddedDriver");
-		p.put("jdbc/StudentsDS__pm.JdbcDriver",
-				"dbc:derby:memory:StudentsDB;create=true");
+		p.put("org.glassfish.ejb.embedded.glassfish.installation.root",
+				"./src/test/resources/glassfish");
+		p.put(EJBContainer.MODULES, new File[] { new File(archive.getName()) });
+
+		new ZipExporterImpl(archive)
+				.exportTo(new File(archive.getName()), true);
+
 		container = EJBContainer.createEJBContainer(p);
+
+
 	}
 
 	@Before
@@ -44,19 +64,18 @@ public class JPAStudentServiceImplTest {
 		container.getContext().bind("inject", this);
 	}
 
-	/** Service retrieved by the Weld container. */
-	@EJB
-	private StudentService mService;
-
 	private static EJBContainer container;
 
-	/**
-	 * Test the addition a new student to the repository.
-	 */
-	@Test
-	public void testAdd() {
+	@Inject
+	StudentService service;
 
-		int n = mService.getAll().size();
+	@Test
+	public void testAdd() throws NamingException {
+
+		StudentService service = (StudentService) container
+				.getContext()
+				.lookup("java:global/test/StudentServiceJPAImpl!ch.demo.business.service.StudentService");
+		int n = service.getAll().size();
 
 		Student s = new Student("Hostettler", "Steve", new Date());
 		s.setPhoneNumber(new PhoneNumber(0, 0, 0));
@@ -65,57 +84,11 @@ public class JPAStudentServiceImplTest {
 			s.getGrades().add(g);
 		}
 
-		mService.add(s);
+		service.add(s);
 
-		Assert.assertEquals(n + 1, mService.getAll().size());
-		Assert.assertEquals("Hostettler", mService.getStudentByKey(s.getKey())
+		Assert.assertEquals(n + 1, service.getAll().size());
+		Assert.assertEquals("Hostettler", service.getStudentByKey(s.getKey())
 				.getLastName());
-	}
-
-	/**
-	 * Tests the retrieval of all the students.
-	 */
-	// @Test
-	public void testAll() {
-		for (Student s : mService.getAll()) {
-			System.out.println(s);
-		}
-	}
-
-	/**
-	 * Tests the distribution of the grades among students.
-	 */
-	// @Test
-	public void testDistribution() {
-		Integer[] distribution = mService.getDistribution(5);
-		Assert.assertEquals(mService.getNbStudent(), distribution[0].intValue());
-		Assert.assertEquals(0, distribution[1].intValue());
-		Assert.assertEquals(0, distribution[2].intValue());
-		Assert.assertEquals(0, distribution[3].intValue());
-		Assert.assertEquals(0, distribution[4].intValue());
-	}
-
-	/**
-	 * Test the behavior when a non-existing student is requested.
-	 */
-	// @Test
-	public void testNonExistingStudent() {
-		Student s = new Student("MyLastName", "MyFirstName", new Date());
-		try {
-			mService.getStudentByKey(s.getKey());
-			Assert.fail("There should be no student with that last name in the DB");
-		} catch (NoResultException ex) {
-			System.out.println(ex.getMessage());
-		}
-	}
-
-	/**
-	 * Test the behavior when a non-existing student is requested.
-	 */
-	// @Test
-	public void testExistingStudent() {
-		testAdd();
-		Assert.assertNotNull(mService.getStudentByLastName("Hostettler"));
 	}
 
 	@AfterClass

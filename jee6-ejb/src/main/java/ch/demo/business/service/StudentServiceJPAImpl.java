@@ -32,12 +32,7 @@ import ch.demo.dom.Student;
 @Interceptors({PerformanceInterceptor.class})
 public class StudentServiceJPAImpl implements StudentService, StudentServiceRemote {
 
-	/**
-	 * The logger for the class. The logger is produced by the LoggerProducer
-	 * and then injected here
-	 */
-	@Inject
-	private transient Logger logger;
+
 
     /** The serial-id. */
     private static final long serialVersionUID = 1386508985359072399L;
@@ -47,11 +42,6 @@ public class StudentServiceJPAImpl implements StudentService, StudentServiceRemo
     @PersistenceContext
     private EntityManager entityManager;
 
-    /** Some post-construtor initializations. Just for fun */
-    @PostConstruct
-    void init() {
-        logger.info("Use the JPA implementation");
-    }
 
     /** The number of times, the service has been invoked. */
 	private Long numberOfAccess = 0l;
@@ -63,7 +53,7 @@ public class StudentServiceJPAImpl implements StudentService, StudentServiceRemo
      * that will measure the time consumed by this method.
      */
     @Override
-    @RolesAllowed({ "user" })
+//    @RolesAllowed({ "user" })
     public List<Student> getAll() {
     	numberOfAccess++;
         CriteriaBuilder qb = entityManager.getCriteriaBuilder();

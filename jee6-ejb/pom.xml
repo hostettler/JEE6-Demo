@@ -35,12 +35,22 @@
 			<name>EclipseLink Repository</name>
 			<url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
 		</repository>
+
 	</repositories>
 
-
-
 	<dependencies>
-
+		<dependency>
+			<groupId>org.jboss.shrinkwrap</groupId>
+			<artifactId>shrinkwrap-api</artifactId>
+			<version>1.1.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.shrinkwrap</groupId>
+			<artifactId>shrinkwrap-impl-base</artifactId>
+			<version>1.1.2</version>
+			<scope>test</scope>
+		</dependency>
 		<!-- Compile dependencies -->
 		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
@@ -48,7 +58,6 @@
 			<version>2.3.2</version>
 			<scope>provided</scope>
 		</dependency>
-
 	</dependencies>
 
 </project>
