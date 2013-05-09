@@ -8,11 +8,10 @@
 	<name>jee6-demo</name>
 
 	<modules>
+		<module>./jee6-ejb</module>
 		<module>./jee6-web</module>
 		<module>./jee6-ear</module>
-		<module>./jee6-ejb</module>
 	</modules>
-
 
 	<build>
 		<plugins>
@@ -185,65 +184,100 @@
 
 
 
+	<repositories>
+		<repository>
+			<id>EclipseLink Repo</id>
+			<name>EclipseLink Repository</name>
+			<url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
+		</repository>
+
+	</repositories>
+
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- Compile dependencies -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.6.4</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-jdk14</artifactId>
+				<version>1.6.4</version>
+				<scope>compile</scope>
+			</dependency>
+			<!-- Provided depencencies -->
+
+			<dependency>
+				<groupId>org.eclipse.persistence</groupId>
+				<artifactId>eclipselink</artifactId>
+				<version>2.3.2</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>javax</groupId>
+				<artifactId>javaee-api</artifactId>
+				<version>6.0</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<!-- Test dependencies -->
+			<dependency>
+				<groupId>org.jboss.shrinkwrap</groupId>
+				<artifactId>shrinkwrap-api</artifactId>
+				<version>1.1.2</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.shrinkwrap</groupId>
+				<artifactId>shrinkwrap-impl-base</artifactId>
+				<version>1.1.2</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.10</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish.extras</groupId>
+				<artifactId>glassfish-embedded-all</artifactId>
+				<version>3.1</version>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
-
-		<dependency>
-			<groupId>org.glassfish.main.extras</groupId>
-			<artifactId>glassfish-embedded-all</artifactId>
-			<version>3.1.2</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- Compile dependencies -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.6.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-jdk14</artifactId>
-			<version>1.6.4</version>
 		</dependency>
-		
-		
 
 		<!-- Test dependencies -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.10</version>
-			<scope>test</scope>
 		</dependency>
-		<!-- Test dependencies -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.dbunit</groupId> -->
-<!-- 			<artifactId>dbunit</artifactId> -->
-<!-- 			<version>2.4.8</version> -->
-<!-- 			<scope>test</scope> -->
-<!-- 		</dependency> -->
-		<dependency>
-			<groupId>org.apache.derby</groupId>
-			<artifactId>derby</artifactId>
-			<version>10.8.2.2</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.derby</groupId>
-			<artifactId>derbytools</artifactId>
-			<version>10.8.2.2</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.derby</groupId>
-			<artifactId>derbyclient</artifactId>
-			<version>10.8.2.2</version>
-			<scope>test</scope>
-		</dependency>
-	
 
+		<!-- Provided depencencies -->
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>eclipselink</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+		</dependency>
 	</dependencies>
-
 
 	<properties>
 		<compileSource>1.6</compileSource>

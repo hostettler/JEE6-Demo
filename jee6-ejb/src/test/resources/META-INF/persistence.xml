@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0"
+	xmlns="http://java.sun.com/xml/ns/persistence">
+	<persistence-unit name="JEE6Demo-Persistence"
+		transaction-type="JTA">
+
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+
+		<jta-data-source>jdbc/StudentsDS</jta-data-source>
+
+		<class>ch.demo.dom.Student</class>
+		<class>ch.demo.dom.Grade</class>
+		<class>ch.demo.dom.Badge</class>
+
+		<properties>
+			<property name="eclipselink.target-database" value="DERBY" />
+			<property name="eclipselink.logging.level" value="INFO" />
+			<property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
+            <property name="eclipselink.ddl-generation.output-mode" value="database"/>
+        </properties>        
+    </persistence-unit>
+</persistence>

@@ -1,0 +1,3 @@
+user2;{SSHA256}qPjLHeHalN7QMhdKJ6xplOVB6LUk/2x/3hBemR5K1v5WxwFirkoihA==;user
+user1;{SSHA256}euLt+d9Mg1IYj0oruH81d0RKxZDmM5GZxW8NNMdaKgAdTQYpDR/dFQ==;user
+admin;{SSHA256}euLt+d9Mg1IYj0oruH81d0RKxZDmM5GZxW8NNMdaKgAdTQYpDR/dFQ==;user,manager

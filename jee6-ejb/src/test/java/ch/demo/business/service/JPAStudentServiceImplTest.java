@@ -2,28 +2,19 @@ package ch.demo.business.service;
 
 import java.io.File;
 import java.util.Date;
-import java.util.Properties;
 
-import javax.ejb.embeddable.EJBContainer;
-import javax.inject.Inject;
-import javax.naming.NamingException;
-
-import org.glassfish.api.ActionReport;
-import org.glassfish.api.admin.ParameterMap;
-import org.glassfish.embeddable.CommandRunner;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.impl.base.exporter.zip.ZipExporterImpl;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import ch.demo.dom.Discipline;
 import ch.demo.dom.Grade;
 import ch.demo.dom.PhoneNumber;
 import ch.demo.dom.Student;
+import ch.demo.dom.jpa.JPAPhoneNumberConverter;
+import ch.demo.helpers.LoggerProducer;
+import ch.demo.test.utils.AbstractEJBTest;
 
 import com.sun.appserv.security.ProgrammaticLogin;
 
@@ -33,49 +24,22 @@ import com.sun.appserv.security.ProgrammaticLogin;
  * @author hostettler
  */
 
-public class JPAStudentServiceImplTest {
+public class JPAStudentServiceImplTest extends
+		AbstractEJBTest<StudentServiceJPAImpl, StudentService> {
 
 	private static final String TEST_RSC = "src/test/resources";
 
-	@BeforeClass
-	public static void start() throws Exception {
-
-		JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "test.jar");
-		archive.addAsManifestResource(new File(TEST_RSC, "META-INF/persistence.xml"));
-		archive.addAsManifestResource(new File(TEST_RSC, "META-INF/beans.xml"));
-		archive.addPackage(java.lang.Package
-				.getPackage("ch.demo.business.service"));
-
-		Properties p = new Properties();
-		p.put("org.glassfish.ejb.embedded.glassfish.installation.root",
-				"./src/test/resources/glassfish");
-		p.put(EJBContainer.MODULES, new File[] { new File(archive.getName()) });
-
-		new ZipExporterImpl(archive)
-				.exportTo(new File(archive.getName()), true);
-
-		container = EJBContainer.createEJBContainer(p);
-
-
+	public JPAStudentServiceImplTest() {
+		super(StudentServiceJPAImpl.class, StudentService.class);
 	}
-
-	@Before
-	public void setUp() throws Exception {
-		container.getContext().bind("inject", this);
-	}
-
-	private static EJBContainer container;
-
-	@Inject
-	StudentService service;
 
 	@Test
-	public void testAdd() throws NamingException {
+	public void testAdd() throws Exception {
 
-		StudentService service = (StudentService) container
-				.getContext()
-				.lookup("java:global/test/StudentServiceJPAImpl!ch.demo.business.service.StudentService");
-		int n = service.getAll().size();
+		ProgrammaticLogin pgLogin = new ProgrammaticLogin();
+		pgLogin.login("admin", "user1", "jee6-tutorial-file-realm", true);
+
+		int n = getEJBUnderTest().getAll().size();
 
 		Student s = new Student("Hostettler", "Steve", new Date());
 		s.setPhoneNumber(new PhoneNumber(0, 0, 0));
@@ -84,15 +48,27 @@ public class JPAStudentServiceImplTest {
 			s.getGrades().add(g);
 		}
 
-		service.add(s);
+		getEJBUnderTest().add(s);
 
-		Assert.assertEquals(n + 1, service.getAll().size());
-		Assert.assertEquals("Hostettler", service.getStudentByKey(s.getKey())
-				.getLastName());
+		Assert.assertEquals(n + 1, getEJBUnderTest().getAll().size());
+		Assert.assertEquals("Hostettler",
+				getEJBUnderTest().getStudentByKey(s.getKey()).getLastName());
 	}
 
-	@AfterClass
-	public static void stop() {
-		container.close();
+	@Override
+	protected JavaArchive createArchive() {
+		JavaArchive archive = ShrinkWrap.create(JavaArchive.class,
+				"target/test.jar");
+		archive.addAsManifestResource(new File(TEST_RSC,
+				"META-INF/persistence.xml"));
+		archive.addAsManifestResource(new File(TEST_RSC, "META-INF/beans.xml"));
+		archive.addAsManifestResource(new File(TEST_RSC,
+				"META-INF/glassfish-ejb-jar.xml"));
+		archive.addPackage(StudentService.class.getPackage());
+		archive.addPackage(Student.class.getPackage());
+		archive.addPackage(JPAPhoneNumberConverter.class.getPackage());
+		archive.addPackage(LoggerProducer.class.getPackage());
+
+		return archive;
 	}
 }

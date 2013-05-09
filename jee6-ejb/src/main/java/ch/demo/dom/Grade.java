@@ -7,9 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
 /**
  * Represents a grade for a given discipline.
@@ -17,7 +15,6 @@ import javax.persistence.Table;
  * @author hostettler
  */
 @Entity
-@Table(name = "GRADES")
 public class Grade implements Serializable {
 
     /** The serial-id. */
@@ -25,7 +22,6 @@ public class Grade implements Serializable {
 
     /** The unique id. */
     @Id
-    @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
@@ -39,7 +35,6 @@ public class Grade implements Serializable {
 
     /** The student that has obtained this grade. */
     @ManyToOne
-    @JoinColumn(name = "STUDENT_ID", nullable = true)
     private Student student;
 
     /**

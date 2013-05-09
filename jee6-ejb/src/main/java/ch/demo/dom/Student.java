@@ -93,9 +93,10 @@ public class Student implements Serializable {
     private Address address;
 
     /** The set of grades of the student. */
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "student")
+
     @OrderBy("discipline DSC")
     @XmlTransient
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "student")
     private List<Grade> grades;
 
     /** Alternative representation of the set of grades of the student. */
