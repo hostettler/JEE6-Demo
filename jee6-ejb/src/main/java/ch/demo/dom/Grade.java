@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  * Represents a grade for a given discipline.
@@ -15,6 +16,7 @@ import javax.persistence.ManyToOne;
  * @author hostettler
  */
 @Entity
+@Table(name = "Grades")
 public class Grade implements Serializable {
 
     /** The serial-id. */
