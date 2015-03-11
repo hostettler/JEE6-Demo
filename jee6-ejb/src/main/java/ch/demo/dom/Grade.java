@@ -17,7 +17,11 @@ import javax.persistence.Table;
  */
 
 @Entity
+<<<<<<< HEAD
 @Table(name = "GRADES")
+=======
+@Table(name = "Grades")
+>>>>>>> 33d24763a289e3431da5f4598e7359a17d084be3
 public class Grade implements Serializable {
 
 	/** The serial-id. */
