@@ -36,7 +36,7 @@ public class Badge implements Serializable {
     /** The unique id. */
     @Id
     @Column(name = "ID")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 
     /** The student's security level. */

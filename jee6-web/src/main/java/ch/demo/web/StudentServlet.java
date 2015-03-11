@@ -45,7 +45,7 @@ public class StudentServlet extends HttpServlet {
 			}
 
 		}
-		statistics.count();
+		statistics.hit();
 
 		response.getOutputStream().println("Session id : " + request.getSession().getId());
 		response.getOutputStream()

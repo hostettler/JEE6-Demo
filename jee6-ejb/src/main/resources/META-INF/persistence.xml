@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="2.0"
 	xmlns="http://java.sun.com/xml/ns/persistence">
-	<persistence-unit name="JEE6Demo-Persistence"
+	<persistence-unit name="JEE6DemoPersistence"
 		transaction-type="JTA">
 
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
@@ -14,7 +14,8 @@
 
 		<properties>
 			<property name="eclipselink.target-database" value="DERBY" />
-			<property name="eclipselink.logging.level" value="INFO" />           
+			<property name="eclipselink.logging.level" value="INFO" />
+
         </properties>        
     </persistence-unit>
 </persistence>

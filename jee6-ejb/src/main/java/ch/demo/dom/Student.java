@@ -4,22 +4,17 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.MapKeyColumn;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -29,12 +24,8 @@ import javax.persistence.SecondaryTable;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.eclipse.persistence.annotations.Convert;
 import org.eclipse.persistence.annotations.Converter;
@@ -51,9 +42,6 @@ import ch.demo.dom.jpa.JPAPhoneNumberConverter;
 @Table(name = "STUDENTS")
 @SecondaryTable(name = "PICTURES", pkJoinColumns = 
 @PrimaryKeyJoinColumn(name = "STUDENT_ID", referencedColumnName = "ID"))
-@XmlRootElement(name = "student")
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(namespace = "http://ch.demo.app")
 public class Student implements Serializable {
 
     /** The serial-id. */
@@ -62,21 +50,29 @@ public class Student implements Serializable {
     /** The unique id. */
     @Id
     @Column(name = "ID")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
-    /** The student last name. */
+    public Long getId() {
+		return id;
+	}
+
+	/** The student last name. */
     @Column(name = "LAST_NAME", length = 35)
-    @XmlElement(name = "last_name")
+    @NotNull
+    @Size(min=2, max=35)
     private String lastName;
 
     /** The student first name. */
     @Column(name = "FIRST_NAME", nullable = false, length = 35)
+    @NotNull
+    @Size(min=2, max=35)    
     private String firstName;
 
     /** The student birth date. */
     @Column(name = "BIRTH_DATE", nullable = false)
     @Temporal(TemporalType.DATE)
+    @NotNull
     private Date birthDate;
 
     /** The student phone number. */
@@ -95,28 +91,18 @@ public class Student implements Serializable {
     /** The set of grades of the student. */
 
     @OrderBy("discipline DSC")
-    @XmlTransient
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "student")
     private List<Grade> grades;
 
-    /** Alternative representation of the set of grades of the student. */
-    @ElementCollection
-    @CollectionTable(name = "GRADES", joinColumns = @JoinColumn(name = "STUDENT_ID"))
-    @MapKeyColumn(name = "Discipline")
-    @Column(name = "GRADE")
-    @XmlTransient
-    private Map<Discipline, Integer> alternativeGrades;
 
     /** A picture of the student. */
     @Lob
     @Basic(fetch = FetchType.LAZY)
     @Column(table = "PICTURES", name = "PICTURE", nullable = true)
-    @XmlTransient
     private byte[] picture;
 
     /** The Student's badge. */
     @OneToOne(mappedBy = "student")
-    @XmlTransient
     private Badge badge;
 
     /**
@@ -124,10 +110,7 @@ public class Student implements Serializable {
      */
     public Student() {
         this.grades = new ArrayList<Grade>();
-        for (Discipline d : Discipline.values()) {
-            Grade g = new Grade(d);
-            this.grades.add(g);
-        }
+ 
 
     }
 
@@ -161,15 +144,14 @@ public class Student implements Serializable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthDate = birthDate;
-        validate();
     }
 
     /**
      * @return an unique identifier
      */
     public String getKey() {
-        if (this.id != null) {
-            return String.valueOf(this.id);
+        if (this.getId() != null) {
+            return String.valueOf(this.getId());
         } else {
             return String.valueOf(this.hashCode());
         }
@@ -249,21 +231,6 @@ public class Student implements Serializable {
     }
 
     /**
-     * Validates the current state of the student information.
-     */
-    public final void validate() {
-        if (this.getFirstName() == null) {
-            throw new IllegalArgumentException("Firstname is mandatory");
-        }
-        if (this.getLastName() == null) {
-            throw new IllegalArgumentException("Lastname is mandatory");
-        }
-        if (this.getBirthDate() == null) {
-            throw new IllegalArgumentException("Birthdate is mandatory");
-        }
-    }
-
-    /**
      * @return the gender
      */
     public final Gender getGender() {
@@ -305,7 +272,7 @@ public class Student implements Serializable {
 
     @Override
     public String toString() {
-        return "Student [id=" + id + ", lastName=" + lastName
+        return "Student [id=" + getId() + ", lastName=" + lastName
                 + ", firstName=" + firstName + ", birthDate=" + birthDate
                 + ", phoneNumber=" + phoneNumber + ", grades=" + grades
                 + "]";
@@ -356,11 +323,7 @@ public class Student implements Serializable {
         this.badge = pBadge;
     }
 
-    /**
-     * @return the alternativeGrades
-     */
-    public Map<Discipline, Integer> getAlternativeGrades() {
-        return alternativeGrades;
-    }
-
+	public void setId(Long id) {
+		this.id = id;
+	}
 }

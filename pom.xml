@@ -220,7 +220,7 @@
 			<dependency>
 				<groupId>javax</groupId>
 				<artifactId>javaee-api</artifactId>
-				<version>6.0</version>
+				<version>7.0</version>
 				<scope>provided</scope>
 			</dependency>
 
@@ -280,7 +280,7 @@
 	</dependencies>
 
 	<properties>
-		<compileSource>1.6</compileSource>
+		<compileSource>1.8</compileSource>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>

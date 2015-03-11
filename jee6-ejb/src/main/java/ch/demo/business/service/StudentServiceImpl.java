@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
+import javax.enterprise.inject.Instance;
 import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,6 +16,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.demo.business.interceptors.PerformanceInterceptor;
+import ch.demo.dom.Address;
 import ch.demo.dom.Student;
 
 /**
@@ -26,8 +28,7 @@ import ch.demo.dom.Student;
  */
 @Stateless
 @Interceptors({ PerformanceInterceptor.class })
-public class StudentServiceJPAImpl implements StudentService,
-		StudentServiceRemote {
+public class StudentServiceImpl implements StudentService {
 
 	/** The serial-id. */
 	private static final long serialVersionUID = 1386508985359072399L;
@@ -39,6 +40,8 @@ public class StudentServiceJPAImpl implements StudentService,
 	@PersistenceContext
 	private EntityManager entityManager;
 
+	Instance<Address> b;
+	
 	/** The number of times, the service has been invoked. */
 	private Long numberOfAccess = 0l;
 
@@ -74,11 +77,24 @@ public class StudentServiceJPAImpl implements StudentService,
 		entityManager.persist(student);
 	}
 
+	
+	/**
+	 * Adding a student to the database is admin stuff.
+	 */
+	@Override
+	@RolesAllowed({ "manager" })
+	public void update(final Student student) {
+		numberOfAccess++;
+		Student currentStudent = getStudentById(student.getId());
+		currentStudent.setFirstName(student.getFirstName());
+		currentStudent.setLastName(student.getLastName());
+		currentStudent.setBirthDate(student.getBirthDate());
+	}
+	
 	@Override
 	@RolesAllowed({ "user" })
-	public final String getStatistics() {
-		return "The student service has been invoked #" + numberOfAccess
-				+ " overall";
+	public final Long getStatistics() {
+		return numberOfAccess;
 	}
 
 	@Override
@@ -144,7 +160,7 @@ public class StudentServiceJPAImpl implements StudentService,
 		CriteriaBuilder qb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Student> c = qb.createQuery(Student.class);
 		Root<Student> from = c.from(Student.class);
-		Predicate condition = qb.equal(from.get("mLastName"), lastname);
+		Predicate condition = qb.equal(from.get("lastName"), lastname);
 		c.where(condition);
 		TypedQuery<Student> query = entityManager.createQuery(c);
 		return query.getSingleResult();

@@ -26,12 +26,11 @@ public class StudentStatisticsServiceImpl implements StudentStatisticsService {
 	private Long numberOfAccess = 0l;
 
 	@Override
-	public String getStatistics() {	
-		return "The student service has been invoked #" + numberOfAccess
-				+ " in this session";
+	public Long getStatistics() {
+		return numberOfAccess;
 	}
 
-	public void count() {
+	public void hit() {
 		logger.info("Count");
 		numberOfAccess++;
 	}
@@ -45,13 +44,13 @@ public class StudentStatisticsServiceImpl implements StudentStatisticsService {
 	private void postActivate() {
 		logger.info("In PostActivate method");
 	}
-	
-	
+
 	@Remove
 	public void clean() {
 		logger.info("Remove Things");
+		numberOfAccess = 0l;
 	}
-	
+
 	@PreDestroy
 	private void destroy() {
 		logger.info("Destroying the EJB");

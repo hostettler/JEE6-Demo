@@ -1,45 +1,41 @@
 package ch.demo.business.service;
 
-import java.io.File;
 import java.util.Date;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import javax.annotation.ManagedBean;
+import javax.inject.Inject;
+
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 
 import ch.demo.dom.Discipline;
 import ch.demo.dom.Grade;
 import ch.demo.dom.PhoneNumber;
 import ch.demo.dom.Student;
-import ch.demo.dom.jpa.JPAPhoneNumberConverter;
-import ch.demo.helpers.LoggerProducer;
-import ch.demo.test.utils.AbstractEJBTest;
-
-import com.sun.appserv.security.ProgrammaticLogin;
+import ch.demo.test.utils.EJB31Runner;
+import ch.demo.test.utils.IntegrationTest;
 
 /**
  * Test the student service mock implementation.
  * 
  * @author hostettler
  */
+@Category(IntegrationTest.class)
+@RunWith(EJB31Runner.class)
+@ManagedBean
+public class StudentServiceImplIntegrationTest {
 
-public class JPAStudentServiceImplTest extends
-		AbstractEJBTest<StudentServiceJPAImpl, StudentService> {
 
-	private static final String TEST_RSC = "src/test/resources";
-
-	public JPAStudentServiceImplTest() {
-		super(StudentServiceJPAImpl.class, StudentService.class);
-	}
+	@Inject
+	StudentService ejb;
 
 	@Test
-	public void testAdd() throws Exception {
+	public void shouldAddANewStudent() throws Exception {
+		EJB31Runner.login("admin", "user1");
 
-		ProgrammaticLogin pgLogin = new ProgrammaticLogin();
-		pgLogin.login("admin", "user1", "jee6-tutorial-file-realm", true);
-
-		int n = getEJBUnderTest().getAll().size();
+		int n = ejb.getAll().size();
 
 		Student s = new Student("Hostettler", "Steve", new Date());
 		s.setPhoneNumber(new PhoneNumber(0, 0, 0));
@@ -48,27 +44,22 @@ public class JPAStudentServiceImplTest extends
 			s.getGrades().add(g);
 		}
 
-		getEJBUnderTest().add(s);
+		ejb.add(s);
 
-		Assert.assertEquals(n + 1, getEJBUnderTest().getAll().size());
-		Assert.assertEquals("Hostettler",
-				getEJBUnderTest().getStudentByKey(s.getKey()).getLastName());
+		Assert.assertEquals(n + 1, ejb.getAll().size());
+		Assert.assertEquals("Hostettler", ejb.getStudentByKey(s.getKey())
+				.getLastName());
+		
+		
+		Assert.assertEquals("Hostettler", ejb.getStudentById(1l).getLastName());
+
+		Assert.assertEquals(n + 1, ejb.getNbStudent());
+		
+		Assert.assertEquals("Student's name is Steve", "Steve", ejb.getStudentByLastName("Hostettler").getFirstName());
+
+		Assert.assertEquals(1, ejb.getAll().size());
+		
+		Assert.assertEquals(new Long(9), ejb.getStatistics());
 	}
 
-	@Override
-	protected JavaArchive createArchive() {
-		JavaArchive archive = ShrinkWrap.create(JavaArchive.class,
-				"target/test.jar");
-		archive.addAsManifestResource(new File(TEST_RSC,
-				"META-INF/persistence.xml"));
-		archive.addAsManifestResource(new File(TEST_RSC, "META-INF/beans.xml"));
-		archive.addAsManifestResource(new File(TEST_RSC,
-				"META-INF/glassfish-ejb-jar.xml"));
-		archive.addPackage(StudentService.class.getPackage());
-		archive.addPackage(Student.class.getPackage());
-		archive.addPackage(JPAPhoneNumberConverter.class.getPackage());
-		archive.addPackage(LoggerProducer.class.getPackage());
-
-		return archive;
-	}
 }

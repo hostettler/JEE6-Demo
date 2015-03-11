@@ -5,9 +5,9 @@ import javax.ejb.Local;
 @Local
 public interface StudentStatisticsService {
 
-	public String getStatistics();
+	public Long getStatistics();
 	
-	public void count();
+	public void hit();
 	
 	public void clean();
 

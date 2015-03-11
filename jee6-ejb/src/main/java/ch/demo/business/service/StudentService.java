@@ -68,5 +68,7 @@ public interface StudentService extends Serializable {
 	/**
 	 * @return the number of time the service has been invoked so far.
 	 */
-	String getStatistics();
+	Long getStatistics();
+
+	void update(Student student);
 }
